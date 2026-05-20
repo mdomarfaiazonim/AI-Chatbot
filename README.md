@@ -64,6 +64,51 @@ This project is designed to simulate a real-world AI SaaS backend architecture r
 
 ---
 
+
+##API Endpoints
+#Authentication Routes
+Method	Endpoint	Description
+POST	/api/auth/signup	Register new user
+POST	/api/auth/login	Login user
+POST	/api/auth/logout	Logout user
+POST	/api/auth/refresh	Refresh access token
+#Chat Routes
+Method	Endpoint	Description
+POST	/api/chat	Send message to AI using context of current user messages
+GET	/api/chat/history	Get chat history of all users
+DELETE	/api/chat/history	Clear chat history of current logged in user
+
+
+#Authentication Workflow
+    Login Flow
+    User logs in
+    Backend validates credentials
+    Access token generated
+    Refresh token generated
+    Tokens stored in HTTP-only cookies
+    Refresh token stored in database
+#Protected Route Flow
+    User sends request
+    protect middleware verifies access token
+    User information attached to req.user
+    Controller executes securely
+#Refresh Token Flow
+    Access token expires
+    Frontend receives 401 Unauthorized
+    Frontend calls /api/auth/refresh
+    Backend verifies refresh token
+    New access token issued
+    User continues without re-login
+#Security Features
+    HTTP-only cookies
+    Secure JWT authentication
+    Refresh token validation
+    Password hashing
+    Rate limiting
+    Input validation
+    Protected API routes
+    Centralized error handling
+
 # Folder Structure
 
 ```txt
@@ -101,47 +146,3 @@ backend/
 ├── package.json
 └── server.js
 
-
-API Endpoints
-Authentication Routes
-Method	Endpoint	Description
-POST	/api/auth/signup	Register new user
-POST	/api/auth/login	Login user
-POST	/api/auth/logout	Logout user
-POST	/api/auth/refresh	Refresh access token
-Chat Routes
-Method	Endpoint	Description
-POST	/api/chat	Send message to AI using context of current user messages
-GET	/api/chat/history	Get chat history of all users
-DELETE	/api/chat/history	Clear chat history of current logged in user
-
-
-Authentication Workflow
-    Login Flow
-    User logs in
-    Backend validates credentials
-    Access token generated
-    Refresh token generated
-    Tokens stored in HTTP-only cookies
-    Refresh token stored in database
-Protected Route Flow
-    User sends request
-    protect middleware verifies access token
-    User information attached to req.user
-    Controller executes securely
-Refresh Token Flow
-    Access token expires
-    Frontend receives 401 Unauthorized
-    Frontend calls /api/auth/refresh
-    Backend verifies refresh token
-    New access token issued
-    User continues without re-login
-Security Features
-    HTTP-only cookies
-    Secure JWT authentication
-    Refresh token validation
-    Password hashing
-    Rate limiting
-    Input validation
-    Protected API routes
-    Centralized error handling
