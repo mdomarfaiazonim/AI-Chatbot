@@ -1,33 +1,84 @@
-require('dotenv').config();                  // MUST be line 1
-// require('dotenv').config({ path: './config/.env' });  // specify path to .env file
-const express    = require('express');
-const cors       = require('cors');
-const connectDB  = require('./config/db');
+// backend/server.js
+
+const dotenv = require('dotenv');
+
+// LOAD ENV VARIABLES FIRST
+dotenv.config();
+
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
+const connectDB = require('./config/db');
+
+const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+
 const errorHandler = require('./middleware/errorHandler');
 
-// 1. Connect Database
+
+
+// =========================
+// DB CONNECTION
+// =========================
 connectDB();
 
+
+
+// =========================
+// APP INIT
+// =========================
 const app = express();
 
-// 2. Middleware
-app.use(cors());                         // allow React frontend
-app.use(express.json());               // parse JSON request body
 
-// 3. Routes
+
+// =========================
+// MIDDLEWARES
+// =========================
+
+// JSON parser
+app.use(express.json());
+
+// Cookie parser
+app.use(cookieParser());
+
+// CORS
+app.use(cors());
+
+
+
+// =========================
+// ROUTES
+// =========================
+app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 
-// 4. Health check (test if server is alive)
+
+
+// =========================
+// HEALTH CHECK
+// =========================
 app.get('/', (req, res) => {
-  res.json({ status: 'Backend is running ✅' });
+    res.status(200).json({
+        success: true,
+        message: 'AI Chatbot Backend is running'
+    });
 });
 
-// 5. Global error handler (must be LAST)
+
+
+// =========================
+// ERROR HANDLER
+// =========================
 app.use(errorHandler);
 
-// 6. Start server
+
+
+// =========================
+// START SERVER
+// =========================
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

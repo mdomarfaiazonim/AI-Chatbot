@@ -1,21 +1,29 @@
+// backend/models/Message.js
+
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema(
-  {
-    role: {
-      type:     String,
-      enum:     ['user', 'bot'],   // only these 2 values allowed
-      required: true
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+
+        role: {
+            type: String,
+            enum: ['user', 'assistant'],
+            required: true
+        },
+
+        content: {
+            type: String,
+            required: true
+        }
     },
-    content: {
-      type:     String,
-      required: true,
-      trim:     true               // strips leading/trailing whitespace
+    {
+        timestamps: true
     }
-  },
-  {
-    timestamps: true               // auto-adds createdAt, updatedAt
-  }
 );
 
 module.exports = mongoose.model('Message', messageSchema);

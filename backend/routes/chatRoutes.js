@@ -1,18 +1,46 @@
+// backend/routes/chatRoutes.js
+
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
+
 const {
-  sendMessage,
-  getHistory,
-  clearHistory
+    sendMessage,
+    getChatHistory,
+    clearChatHistory
 } = require('../controllers/chatController');
 
-// POST /api/chat     → send a message
-router.post('/', sendMessage);
+const protect = require('../middleware/protect');
 
-// GET /api/chat/history    → load history
-router.get('/history', getHistory);
+const {
+    apiLimiter
+} = require('../middleware/rateLimiter');
 
-// DELETE /api/chat/history → clear history
-router.delete('/history', clearHistory);
+
+
+// =========================
+// CHAT ROUTES (PROTECTED)
+// =========================
+
+// SEND MESSAGE TO AI
+router.post(
+    '/',
+    protect,
+    apiLimiter,
+    sendMessage
+);
+
+// GET CHAT HISTORY
+router.get(
+    '/history',
+    protect,
+    getChatHistory
+);
+
+// CLEAR CHAT HISTORY
+router.delete(
+    '/history',
+    protect,
+    clearChatHistory
+);
 
 module.exports = router;
